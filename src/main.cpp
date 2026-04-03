@@ -16,6 +16,7 @@ std::vector<std::unique_ptr<Command>> GetCommands();
 #include "commands/resources/nodes_handler.cpp"
 #include "commands/resources/meshes_handler.cpp"
 #include "commands/resources/materials_handler.cpp"
+#include "commands/resources/textures_handler.cpp"
 #include "commands/resources/animations_handler.cpp"
 #include "commands/resources.cpp"
 
