@@ -52,6 +52,7 @@ report_*.txt
 
 # Test files (large FBX files)
 test_files/
+test_output/
 *.fbx
 
 # OS

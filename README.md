@@ -48,3 +48,9 @@ fbx-toolkit tools split-skeleton input.fbx output_dir/
 
 - [ARCHITECTURE.md](ARCHITECTURE.md) - Design and implementation
 - [ROADMAP.md](ROADMAP.md) - Planned features
+
+## License
+
+This project is licensed under the MIT License - see [LICENSE](LICENSE) file.
+
+**Note**: This software uses the Autodesk FBX SDK, which is proprietary software licensed separately by Autodesk. The FBX SDK is free for development use but subject to Autodesk's terms and conditions.
