@@ -119,14 +119,14 @@ private:
 
     void PrintUsage() {
         std::cout << "Usage: " << GetUsage() << "\n\n";
-        std::cout << "Examples:\n";
-        std::cout << "  resources character.fbx/scene\n";
-        std::cout << "  resources character.fbx/skeleton               # Brief list\n";
-        std::cout << "  resources character.fbx/skeleton/0/**          # Full tree\n";
-        std::cout << "\nAvailable resources:\n";
+        std::cout << "Pattern: file.fbx/<resource>[/<name>][/**]\n\n";
+        std::cout << "Available resources:\n\n";
 
         for (const auto& name : ResourceRegistry::Instance().GetResourceNames()) {
+            const ResourceHandler* handler = ResourceRegistry::Instance().Get(name);
             std::cout << "  " << name << "\n";
+            std::cout << "    " << handler->GetDescription() << "\n";
+            std::cout << "    Example: " << handler->GetUsageExample() << "\n\n";
         }
     }
 };

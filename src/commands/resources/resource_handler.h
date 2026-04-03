@@ -22,6 +22,12 @@ public:
     // What resource does this handle? (e.g., "scene", "skeleton", "meshes")
     virtual const char* GetResourceName() const = 0;
 
+    // Brief description for help text
+    virtual const char* GetDescription() const = 0;
+
+    // Usage examples
+    virtual const char* GetUsageExample() const = 0;
+
     // What loading strategy does this resource need?
     virtual LoadStrategy GetLoadStrategy(const std::vector<std::string>& pathSegments) const = 0;
 

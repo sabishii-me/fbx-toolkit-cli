@@ -8,6 +8,14 @@ public:
         return "scene";
     }
 
+    const char* GetDescription() const override {
+        return "Scene metadata, units, coordinate system, statistics";
+    }
+
+    const char* GetUsageExample() const override {
+        return "fbx-toolkit resources file.fbx/scene";
+    }
+
     LoadStrategy GetLoadStrategy(const std::vector<std::string>& pathSegments) const override {
         return LoadStrategy::MINIMAL;  // Need to import for scene statistics
     }
