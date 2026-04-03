@@ -1,107 +1,66 @@
 # FBX Toolkit
 
-A command-line toolkit for FBX file processing, designed for game development workflows.
-
-## Features
-
-- **Modular architecture** - Easy to add new commands
-- **CLI interface** - Simple command-based interaction
-- **MCP-ready** - Can be piped to MCP servers
-- **Batch processing** - Process single files or entire directories
-
-## Available Commands
-
-### bone-reset
-Reset bone rotations and fix hand/hip positions in Optitrack FBX files.
-
-```bash
-fbx-toolkit bone-reset <file_or_directory>
-```
-
-- Resets all bone rotations to zero on the first frame
-- Fixes thumb rotations (45° adjustments for natural hand pose)
-- Centers hip position (removes X/Z translation)
-- Generates timestamped processing reports
-
-### axis-mender
-Retarget FBX animations with coordinate system adjustments.
-
-```bash
-fbx-toolkit axis-mender <input_fbx_file>
-```
-
-- Retargets animations between skeletons
-- Applies -90° X-axis rotation for coordinate system conversion
-- Outputs to `<filename>_retargeted.fbx`
+Command-line tools for FBX file processing and querying.
 
 ## Usage
 
-List all available commands:
 ```bash
-fbx-toolkit
+# Query resources (read-only, fast)
+fbx-toolkit resources <file.fbx/resource[/path]>
+
+# Process/modify files (write operations)
+fbx-toolkit tools <tool-name> <args>
 ```
 
-List commands in JSON format (for MCP):
+## Resources (Query FBX Data)
+
+Available: `animations` `blendshapes` `cameras` `deformers` `lights` `materials` `media` `meshes` `nodes` `poses` `scene` `skeleton` `textures`
+
 ```bash
-fbx-toolkit list
+# Scene metadata
+fbx-toolkit resources file.fbx/scene
+
+# List all meshes
+fbx-toolkit resources file.fbx/meshes
+
+# Mesh details with FBX unique IDs
+fbx-toolkit resources file.fbx/meshes/MeshName
+
+# Extract embedded texture binary
+fbx-toolkit resources file.fbx/media/TextureName/data > output.png
+
+# Progressive animation loading
+fbx-toolkit resources file.fbx/animations              # Fast list (header-only)
+fbx-toolkit resources file.fbx/animations/AnimName     # Single anim metadata  
+fbx-toolkit resources file.fbx/animations/AnimName/**  # Full curve data
 ```
 
-Run a specific command:
+## Tools (Modify FBX Files)
+
+- **bone-reset** - Reset bone rotations, fix hand/hip positions
+- **axis-mender** - Retarget animations with coordinate system conversion
+- **split-skeleton** - Split multi-skeleton FBX into separate files
+
 ```bash
-fbx-toolkit <command> [arguments]
+fbx-toolkit tools bone-reset <input.fbx> <output.fbx>
+fbx-toolkit tools split-skeleton <input.fbx> <output_dir>
 ```
 
 ## Building
 
 ```bash
-mkdir build
-cd build
-cmake ..
-cmake --build .
+cmake -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build --config Release
 ```
 
-The executable will be in `build/bin/fbx-toolkit.exe`
+Binary: `build/bin/Release/fbx-toolkit.exe`
 
-## Adding New Commands
+## Key Features
 
-1. Create a new `.cpp` file in `src/commands/`
-2. Implement the `Command` interface
-3. Add factory function: `extern "C" Command* CreateCommand()`
-4. Register in `src/main.cpp` in `GetCommands()`
+- **Progressive loading** - Query metadata without full scene import
+- **Raw FBX access** - Exposes FBX unique IDs for cross-referencing
+- **Computed poses** - Generates bind poses from skin deformers when not stored
+- **Media extraction** - Dumps embedded textures to system temp cache
+- **Modular architecture** - Auto-registered resource handlers
 
-Example:
-```cpp
-#include "command.h"
-
-class MyCommand : public Command {
-public:
-    const char* GetName() const override { return "my-command"; }
-    const char* GetDescription() const override { return "Does something cool"; }
-    const char* GetUsage() const override { return "my-command <args>"; }
-    
-    int Execute(const std::vector<std::string>& args) override {
-        // Your implementation
-        return 0;
-    }
-};
-
-extern "C" Command* CreateCommand() {
-    return new MyCommand();
-}
-```
-
-## Architecture
-
-```
-fbx-toolkit/
-├── src/
-│   ├── main.cpp              # CLI dispatcher & command registry
-│   └── commands/
-│       ├── command.h         # Base command interface
-│       ├── bone_reset.cpp    # Bone reset implementation
-│       └── axis_mender.cpp   # Axis mender implementation
-├── CMakeLists.txt
-└── README.md
-```
-
-Each command is self-contained and independent, making the codebase easy to maintain and extend.
+See [ARCHITECTURE.md](ARCHITECTURE.md) and [ROADMAP.md](ROADMAP.md).

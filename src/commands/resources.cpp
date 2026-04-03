@@ -64,6 +64,17 @@ public:
             // Import scene with configured settings
             loader.ConfigureImport(handler, pathSegments);
 
+            // Set extraction folder for embedded media (system temp + cache subdirectory)
+            #ifdef _WIN32
+                const char* tempDir = std::getenv("TEMP");
+                if (!tempDir) tempDir = std::getenv("TMP");
+                if (!tempDir) tempDir = "C:\\Windows\\Temp";
+            #else
+                const char* tempDir = "/tmp";
+            #endif
+            std::string cacheFolder = std::string(tempDir) + "/fbx_toolkit_cache";
+            loader.SetEmbeddingExtractionFolder(cacheFolder);
+
             if (!loader.ImportScene()) {
                 std::cerr << "Error: Failed to import scene\n";
                 return 1;
@@ -72,7 +83,10 @@ public:
             output = handler->HandleScene(loader.GetScene(), pathSegments);
         }
 
-        std::cout << output << std::endl;
+        // Only output if there's content (binary data returns empty string)
+        if (!output.empty()) {
+            std::cout << output << std::endl;
+        }
 
         // Fast exit: Skip FBX SDK cleanup which can hang on large animation data
         // OS will reclaim memory instantly. For host mode, we'll need proper cleanup.

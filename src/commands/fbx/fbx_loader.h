@@ -39,6 +39,22 @@ public:
         return true;
     }
 
+    // Set extraction folder for embedded media
+    void SetEmbeddingExtractionFolder(const std::string& folder) {
+        if (importer_) {
+            importer_->SetEmbeddingExtractionFolder(folder.c_str());
+        }
+    }
+
+    // Get extraction folder for embedded media
+    std::string GetEmbeddingExtractionFolder() {
+        if (importer_) {
+            const char* folder = importer_->GetEmbeddingExtractionFolder();
+            return folder ? folder : "";
+        }
+        return "";
+    }
+
     // Configure import settings (call before ImportScene)
     void ConfigureImport(const ResourceHandler* handler, const std::vector<std::string>& pathSegments) {
         if (handler) {

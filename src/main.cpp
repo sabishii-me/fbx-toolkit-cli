@@ -17,7 +17,13 @@ std::vector<std::unique_ptr<Command>> GetCommands();
 #include "commands/resources/meshes_handler.cpp"
 #include "commands/resources/materials_handler.cpp"
 #include "commands/resources/textures_handler.cpp"
+#include "commands/resources/media_handler.cpp"
 #include "commands/resources/animations_handler.cpp"
+#include "commands/resources/cameras_handler.cpp"
+#include "commands/resources/lights_handler.cpp"
+#include "commands/resources/poses_handler.cpp"
+#include "commands/resources/deformers_handler.cpp"
+#include "commands/resources/blendshapes_handler.cpp"
 #include "commands/resources.cpp"
 
 // Tool implementations
