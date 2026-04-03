@@ -19,7 +19,11 @@ private:
         auto time = std::chrono::system_clock::to_time_t(now);
 
         struct tm timeInfo;
+#ifdef _WIN32
         localtime_s(&timeInfo, &time);
+#else
+        localtime_r(&time, &timeInfo);
+#endif
 
         std::stringstream ss;
         ss << std::put_time(&timeInfo, "%Y-%m-%d_%H-%M-%S");
@@ -201,11 +205,19 @@ public:
         }
 
         FILE* reportFile = nullptr;
+#ifdef _WIN32
         errno_t err = freopen_s(&reportFile, reportPath.string().c_str(), "w", stdout);
         if (err != 0) {
             printf("Failed to open report file at %s.\n", reportPath.string().c_str());
             return -1;
         }
+#else
+        reportFile = freopen(reportPath.string().c_str(), "w", stdout);
+        if (!reportFile) {
+            printf("Failed to open report file at %s.\n", reportPath.string().c_str());
+            return -1;
+        }
+#endif
 
         if (fs::is_directory(targetPath)) {
             ProcessDirectory(targetPath);
@@ -217,7 +229,11 @@ public:
         }
 
         fclose(reportFile);
+#ifdef _WIN32
         freopen_s(&reportFile, "CON", "w", stdout);
+#else
+        freopen("/dev/tty", "w", stdout);
+#endif
         return 0;
     }
 };
