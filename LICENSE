@@ -20,18 +20,28 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----
+================================================================================
 
-THIRD-PARTY SOFTWARE NOTICE
+AUTODESK FBX SDK LICENSE
 
-This software uses the Autodesk FBX SDK, which is proprietary software owned
-by Autodesk, Inc. The FBX SDK is licensed separately under Autodesk's terms
-and conditions. The FBX SDK installers included in this repository's
-third_party/ directory are provided by Autodesk for free use in accordance
-with their licensing terms.
+This software contains Autodesk® FBX® code developed by Autodesk, Inc.
+Copyright 2008 Autodesk, Inc. All rights, reserved.
 
-For FBX SDK license information, visit:
+Such code is provided "as is" and Autodesk, Inc. disclaims any and all
+warranties, whether express or implied, including without limitation the
+implied warranties of merchantability, fitness for a particular purpose or
+non-infringement of third party rights. In no event shall Autodesk, Inc. be
+liable for any direct, indirect, incidental, special, exemplary, or
+consequential damages (including, but not limited to, procurement of
+substitute goods or services; loss of use, data, or profits; or business
+interruption) however caused and on any theory of liability, whether in
+contract, strict liability, or tort (including negligence or otherwise)
+arising in any way out of such code.
+
+You may use the Autodesk FBX SDK to build applications that read, write, and
+manipulate FBX data, and distribute these products as you see fit. You may NOT
+repackage or redistribute the FBX SDK itself without written consent from
+Autodesk.
+
+For complete FBX SDK license terms, visit:
 https://www.autodesk.com/developer-network/platform-technologies/fbx-sdk-2020-3-7
-
-The MIT License above applies only to the FBX Toolkit source code and does
-not apply to the Autodesk FBX SDK.
