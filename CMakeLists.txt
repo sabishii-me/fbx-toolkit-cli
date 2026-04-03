@@ -57,8 +57,24 @@ if(USE_SYSTEM_FBX_SDK)
             INTERFACE_INCLUDE_DIRECTORIES "${FBX_SDK_ROOT}/include"
         )
     else()
+        # Try multiple possible Linux paths
+        if(EXISTS "${FBX_SDK_ROOT}/lib/gcc/${FBX_ARCH}/release/libfbxsdk.so")
+            set(FBX_LIB_PATH "${FBX_SDK_ROOT}/lib/gcc/${FBX_ARCH}/release/libfbxsdk.so")
+        elseif(EXISTS "${FBX_SDK_ROOT}/lib/gcc4/${FBX_ARCH}/release/libfbxsdk.so")
+            set(FBX_LIB_PATH "${FBX_SDK_ROOT}/lib/gcc4/${FBX_ARCH}/release/libfbxsdk.so")
+        else()
+            # Search for the library
+            file(GLOB_RECURSE FBX_LIB_SEARCH "${FBX_SDK_ROOT}/lib/*/libfbxsdk.so")
+            if(FBX_LIB_SEARCH)
+                list(GET FBX_LIB_SEARCH 0 FBX_LIB_PATH)
+                message(STATUS "Found FBX SDK library at: ${FBX_LIB_PATH}")
+            else()
+                message(FATAL_ERROR "Could not find libfbxsdk.so in ${FBX_SDK_ROOT}/lib")
+            endif()
+        endif()
+
         set_target_properties(fbxsdk PROPERTIES
-            IMPORTED_LOCATION "${FBX_SDK_ROOT}/lib/gcc/${FBX_ARCH}/release/libfbxsdk.so"
+            IMPORTED_LOCATION "${FBX_LIB_PATH}"
             INTERFACE_INCLUDE_DIRECTORIES "${FBX_SDK_ROOT}/include"
         )
     endif()
