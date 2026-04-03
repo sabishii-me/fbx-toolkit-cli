@@ -1,10 +1,9 @@
-name: Build FBX Toolkit
+name: Build and Release
 
 on:
   push:
-    branches: [ main, develop ]
-  pull_request:
-    branches: [ main ]
+    tags:
+      - 'v*'
   workflow_dispatch:
 
 jobs:
@@ -15,11 +14,14 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Extract FBX SDK with 7-Zip
+    - name: Reassemble and Extract FBX SDK
       shell: pwsh
       run: |
-        Write-Host "Extracting FBX SDK..."
-        & "C:\Program Files\7-Zip\7z.exe" x third_party\fbx_win.exe -o"C:\FBX_SDK" -y
+        Write-Host "Reassembling multi-part archive..."
+        & "C:\Program Files\7-Zip\7z.exe" x third_party\fbx_win.7z.001 -o"temp_extract" -y
+
+        Write-Host "Extracting FBX SDK installer..."
+        & "C:\Program Files\7-Zip\7z.exe" x temp_extract\fbx_win.exe -o"C:\FBX_SDK" -y
 
         if (Test-Path "C:\FBX_SDK\include\fbxsdk.h") {
           Write-Host "✓ FBX SDK extracted successfully"
@@ -146,7 +148,6 @@ jobs:
   create-release:
     needs: [build-windows, build-linux, build-macos]
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/v')
 
     steps:
     - name: Download all artifacts
@@ -155,6 +156,9 @@ jobs:
     - name: Create Release
       uses: softprops/action-gh-release@v1
       with:
+        draft: false
+        prerelease: false
+        generate_release_notes: true
         files: |
           fbx-toolkit-windows-x64/*
           fbx-toolkit-linux-x64/*
