@@ -38,10 +38,11 @@ interruption) however caused and on any theory of liability, whether in
 contract, strict liability, or tort (including negligence or otherwise)
 arising in any way out of such code.
 
-You may use the Autodesk FBX SDK to build applications that read, write, and
-manipulate FBX data, and distribute these products as you see fit. You may NOT
-repackage or redistribute the FBX SDK itself without written consent from
-Autodesk.
+The Autodesk FBX SDK is licensed under the Autodesk Developer Network License
+Agreement. You may use the FBX SDK to develop applications that read, write,
+and manipulate FBX files. The FBX SDK installers included in this repository
+are provided for build convenience only and remain subject to Autodesk's
+license terms.
 
-For complete FBX SDK license terms, visit:
-https://www.autodesk.com/developer-network/platform-technologies/fbx-sdk-2020-3-7
+For complete FBX SDK license information, visit:
+https://aps.autodesk.com/developer/overview/fbx-sdk
