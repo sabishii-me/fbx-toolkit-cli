@@ -78,6 +78,15 @@ jobs:
         sudo mkdir -p /opt/fbx_sdk
         printf 'yes\nn\n' | sudo ./fbx202039_fbxsdk_linux /opt/fbx_sdk
 
+    - name: Check FBX SDK structure
+      run: |
+        echo "FBX SDK directory structure:"
+        ls -la /opt/fbx_sdk/
+        echo "Include directory:"
+        ls -la /opt/fbx_sdk/include/ || true
+        echo "Lib directory:"
+        find /opt/fbx_sdk/lib -type f -name "*.so" || true
+
     - name: Configure CMake
       run: cmake -B build -DUSE_SYSTEM_FBX_SDK=ON -DFBX_SDK_ROOT="/opt/fbx_sdk" -DCMAKE_BUILD_TYPE=Release
 
