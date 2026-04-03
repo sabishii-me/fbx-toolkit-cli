@@ -10,8 +10,16 @@ extern Command* CreateCommand(); // from bone_reset.cpp or axis_mender.cpp
 // Registry of all available commands - ADD NEW COMMANDS HERE
 std::vector<std::unique_ptr<Command>> GetCommands();
 
-// We'll include implementations after declarations
+// Resource handlers (modular architecture)
+#include "commands/resources/scene_handler.cpp"
+#include "commands/resources/skeleton_handler.cpp"
+#include "commands/resources/nodes_handler.cpp"
+#include "commands/resources/meshes_handler.cpp"
+#include "commands/resources/materials_handler.cpp"
+#include "commands/resources/animations_handler.cpp"
 #include "commands/resources.cpp"
+
+// Tool implementations
 #include "commands/tools.cpp"
 #include "commands/bone_reset.cpp"
 #include "commands/axis_mender.cpp"
