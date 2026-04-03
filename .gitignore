@@ -1,0 +1,73 @@
+# Build artifacts
+build/
+bin/
+lib/
+*.exe
+*.dll
+*.so
+*.dylib
+*.a
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+cmake_install.cmake
+install_manifest.txt
+CTestTestfile.cmake
+_deps
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.sdf
+*.opensdf
+*.db
+*.opendb
+*.VC.db
+*.VC.VC.opendb
+x64/
+x86/
+Debug/
+Release/
+RelWithDebInfo/
+MinSizeRel/
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Temporary files
+*.log
+*.tmp
+*.bak
+*.swp
+*~
+report_*.txt
+
+# Test files (large FBX files)
+test_files/
+*.fbx
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# FBX SDK (if locally installed)
+fbxsdk/
+FBX_SDK/
+fbx_sdk_installer.*
+
+# vcpkg
+vcpkg_installed/
+
+# Build scripts artifacts
+ALL_BUILD.*
+ZERO_CHECK.*
+_archive/

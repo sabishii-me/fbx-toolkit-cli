@@ -1,0 +1,163 @@
+name: Build FBX Toolkit
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Extract FBX SDK with 7-Zip
+      shell: pwsh
+      run: |
+        Write-Host "Extracting FBX SDK..."
+        & "C:\Program Files\7-Zip\7z.exe" x third_party\fbx_win.exe -o"C:\FBX_SDK" -y
+
+        if (Test-Path "C:\FBX_SDK\include\fbxsdk.h") {
+          Write-Host "✓ FBX SDK extracted successfully"
+        } else {
+          Write-Error "Extraction failed"
+          exit 1
+        }
+
+    - name: Configure CMake
+      run: cmake -B build -DUSE_SYSTEM_FBX_SDK=ON -DFBX_SDK_ROOT="C:/FBX_SDK" -DCMAKE_BUILD_TYPE=Release
+
+    - name: Build
+      run: cmake --build build --config Release
+
+    - name: Test executable
+      shell: pwsh
+      run: |
+        $exe = "build\bin\Release\fbx-toolkit.exe"
+        if (Test-Path $exe) {
+          Write-Host "✓ Build successful"
+          & $exe
+        } else {
+          Write-Error "Executable not found"
+          exit 1
+        }
+
+    - name: Package artifacts
+      run: |
+        mkdir artifacts
+        cp build/bin/Release/fbx-toolkit.exe artifacts/
+        cp C:/FBX_SDK/lib/x64/release/libfbxsdk.dll artifacts/
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: fbx-toolkit-windows-x64
+        path: artifacts/*
+
+  build-linux:
+    runs-on: ubuntu-22.04
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: sudo apt-get update && sudo apt-get install -y build-essential cmake libxml2-dev zlib1g-dev
+
+    - name: Extract and Install FBX SDK
+      run: |
+        cd third_party
+        tar -xzf fbx_linux.tar.gz
+        chmod +x fbx202039_fbxsdk_gcc_linux
+        sudo mkdir -p /opt/fbx_sdk
+        printf 'yes\nn\n' | sudo ./fbx202039_fbxsdk_gcc_linux /opt/fbx_sdk
+
+    - name: Configure CMake
+      run: cmake -B build -DUSE_SYSTEM_FBX_SDK=ON -DFBX_SDK_ROOT="/opt/fbx_sdk" -DCMAKE_BUILD_TYPE=Release
+
+    - name: Build
+      run: cmake --build build --config Release -j$(nproc)
+
+    - name: Test executable
+      run: |
+        if [ -f "build/bin/fbx-toolkit" ]; then
+          echo "✓ Build successful"
+          ./build/bin/fbx-toolkit
+        else
+          echo "ERROR: Executable not found"
+          exit 1
+        fi
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: fbx-toolkit-linux-x64
+        path: build/bin/fbx-toolkit
+
+  build-macos:
+    runs-on: macos-13
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Extract and Install FBX SDK
+      run: |
+        cd third_party
+        tar -xzf fbx_mac.pkg.tgz
+        sudo installer -pkg *.pkg -target /
+
+    - name: Find FBX SDK Path
+      id: fbx_path
+      run: |
+        if [ -d "/Applications/Autodesk/FBX SDK/2020.3.9" ]; then
+          echo "path=/Applications/Autodesk/FBX SDK/2020.3.9" >> $GITHUB_OUTPUT
+        elif [ -d "/Applications/Autodesk" ]; then
+          path=$(find /Applications/Autodesk -name "FBX SDK" -type d | head -1)
+          echo "path=$path/$(ls "$path" | head -1)" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Configure CMake
+      run: cmake -B build -DUSE_SYSTEM_FBX_SDK=ON -DFBX_SDK_ROOT="${{ steps.fbx_path.outputs.path }}" -DCMAKE_BUILD_TYPE=Release
+
+    - name: Build
+      run: cmake --build build --config Release -j$(sysctl -n hw.ncpu)
+
+    - name: Test executable
+      run: |
+        if [ -f "build/bin/fbx-toolkit" ]; then
+          echo "✓ Build successful"
+          ./build/bin/fbx-toolkit
+        else
+          echo "ERROR: Executable not found"
+          exit 1
+        fi
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: fbx-toolkit-macos-x64
+        path: build/bin/fbx-toolkit
+
+  create-release:
+    needs: [build-windows, build-linux, build-macos]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+
+    steps:
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          fbx-toolkit-windows-x64/*
+          fbx-toolkit-linux-x64/*
+          fbx-toolkit-macos-x64/*
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

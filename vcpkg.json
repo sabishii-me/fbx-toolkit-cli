@@ -1,0 +1,7 @@
+{
+  "name": "fbx-toolkit",
+  "version": "1.0.0",
+  "description": "FBX file processing toolkit with modular commands",
+  "dependencies": [],
+  "builtin-baseline": "latest"
+}
