@@ -114,12 +114,21 @@ install(TARGETS fbx-toolkit
     RUNTIME DESTINATION bin
 )
 
-# Copy FBX SDK DLL on Windows
-if(WIN32 AND USE_SYSTEM_FBX_SDK)
-    add_custom_command(TARGET fbx-toolkit POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            "${FBX_LIB_PATH}/release/libfbxsdk.dll"
-            "$<TARGET_FILE_DIR:fbx-toolkit>"
-        COMMENT "Copying FBX SDK DLL to output directory"
-    )
+# Copy FBX SDK libraries to output directory
+if(USE_SYSTEM_FBX_SDK)
+    if(WIN32)
+        add_custom_command(TARGET fbx-toolkit POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                "${FBX_LIB_PATH}/release/libfbxsdk.dll"
+                "$<TARGET_FILE_DIR:fbx-toolkit>"
+            COMMENT "Copying FBX SDK DLL to output directory"
+        )
+    elseif(APPLE)
+        add_custom_command(TARGET fbx-toolkit POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                "${FBX_SDK_ROOT}/lib/clang/release/libfbxsdk.dylib"
+                "$<TARGET_FILE_DIR:fbx-toolkit>"
+            COMMENT "Copying FBX SDK dylib to output directory"
+        )
+    endif()
 endif()
