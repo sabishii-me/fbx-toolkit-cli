@@ -165,15 +165,24 @@ jobs:
     - name: Download all artifacts
       uses: actions/download-artifact@v4
 
+    - name: List downloaded artifacts
+      run: |
+        echo "Downloaded artifacts:"
+        ls -R
+
+    - name: Prepare release files
+      run: |
+        mkdir release-files
+        cp fbx-toolkit-windows-x64/* release-files/ || true
+        cp fbx-toolkit-linux-x64/fbx-toolkit release-files/fbx-toolkit-linux || true
+        cp fbx-toolkit-macos-x64/fbx-toolkit release-files/fbx-toolkit-macos || true
+
     - name: Create Release
       uses: softprops/action-gh-release@v1
       with:
         draft: false
         prerelease: false
         generate_release_notes: true
-        files: |
-          fbx-toolkit-windows-x64/*
-          fbx-toolkit-linux-x64/*
-          fbx-toolkit-macos-x64/*
+        files: release-files/*
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
