@@ -101,7 +101,7 @@ jobs:
         path: build/bin/fbx-toolkit
 
   build-macos:
-    runs-on: macos-13
+    runs-on: macos-latest
 
     steps:
     - name: Checkout code
