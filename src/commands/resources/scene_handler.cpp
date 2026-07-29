@@ -51,9 +51,14 @@ public:
 
         // Time mode
         FbxTime::EMode timeMode = settings.GetTimeMode();
+        const double sdkTimelineRate = FbxTime::GetFrameRate(timeMode);
+        const double declaredRate = timeMode == FbxTime::eCustom
+            ? settings.GetCustomFrameRate()
+            : sdkTimelineRate;
         json << "  \"time\": {\n";
         json << "    \"mode\": " << static_cast<int>(timeMode) << ",\n";
-        json << "    \"fps\": " << FbxTime::GetFrameRate(timeMode) << "\n";
+        json << "    \"fps\": " << declaredRate << ",\n";
+        json << "    \"sdk_timeline_fps\": " << sdkTimelineRate << "\n";
         json << "  },\n";
 
         // Statistics
