@@ -44,6 +44,22 @@ fbx-toolkit tools bone-reset input.fbx output.fbx
 fbx-toolkit tools split-skeleton input.fbx output_dir/
 ```
 
+### Animation frame-rate tools
+
+These tools intentionally have different behavior:
+
+```bash
+# True resampling: preserve duration/speed and bake interpolated transform keys at 60 FPS.
+# Key count and file size may change.
+fbx-toolkit tools resample input.fbx output_60fps.fbx 60 --zero-start
+
+# FPS correction: keep existing transform keys but retimestamp them as 180 FPS samples.
+# Duration and playback speed change; key count is preserved.
+fbx-toolkit tools reinterpret-fps slow_motion.fbx corrected_180fps.fbx 180 --zero-start
+```
+
+`--zero-start` is optional and moves the animation start to `00:00:00`. Both tools write a new file and reject identical input/output paths.
+
 ## Documentation
 
 - [ARCHITECTURE.md](ARCHITECTURE.md) - Design and implementation

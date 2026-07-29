@@ -32,10 +32,16 @@ public:
             std::cout << "    Retarget animations with coordinate system adjustments\n\n";
             std::cout << "  split-skeleton <input.fbx> [output_dir]\n";
             std::cout << "    Split multi-skeleton FBX into separate files (proper scene cloning)\n\n";
+            std::cout << "  resample <input.fbx> <output.fbx> <fps> [--zero-start]\n";
+            std::cout << "    Evaluate and bake transform curves at a new FPS; preserves duration and speed, changes key count\n\n";
+            std::cout << "  reinterpret-fps <input.fbx> <output.fbx> <fps> [--zero-start]\n";
+            std::cout << "    Retimestamp existing transform keys; preserves keys but changes duration and playback speed\n\n";
             std::cout << "Examples:\n";
             std::cout << "  tools bone-reset character.fbx\n";
             std::cout << "  tools axis-mender animation.fbx\n";
             std::cout << "  tools split-skeleton mocap.fbx output/\n";
+            std::cout << "  tools resample input.fbx output_60fps.fbx 60 --zero-start\n";
+            std::cout << "  tools reinterpret-fps slow_motion.fbx corrected_180fps.fbx 180 --zero-start\n";
             return 1;
         }
 
@@ -52,9 +58,15 @@ public:
         } else if (toolName == "split-skeleton") {
             extern int ExecuteSplitSkeleton(const std::vector<std::string>& args);
             return ExecuteSplitSkeleton(toolArgs);
+        } else if (toolName == "resample") {
+            extern int ExecuteResample(const std::vector<std::string>& args);
+            return ExecuteResample(toolArgs);
+        } else if (toolName == "reinterpret-fps") {
+            extern int ExecuteReinterpretFps(const std::vector<std::string>& args);
+            return ExecuteReinterpretFps(toolArgs);
         } else {
             std::cerr << "Error: Unknown tool: " << toolName << "\n\n";
-            std::cout << "Available tools: bone-reset, axis-mender, split-skeleton\n";
+            std::cout << "Available tools: bone-reset, axis-mender, split-skeleton, resample, reinterpret-fps\n";
             return 1;
         }
     }

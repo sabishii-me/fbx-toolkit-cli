@@ -31,6 +31,8 @@ std::vector<std::unique_ptr<Command>> GetCommands();
 #include "commands/bone_reset.cpp"
 #include "commands/axis_mender.cpp"
 #include "commands/split_skeleton.cpp"
+#include "commands/resample.cpp"
+#include "commands/reinterpret_fps.cpp"
 
 // Export tool execution functions for tools.cpp
 int ExecuteBoneReset(const std::vector<std::string>& args) {
@@ -45,6 +47,16 @@ int ExecuteAxisMender(const std::vector<std::string>& args) {
 
 int ExecuteSplitSkeleton(const std::vector<std::string>& args) {
     SplitSkeletonCommand cmd;
+    return cmd.Execute(args);
+}
+
+int ExecuteResample(const std::vector<std::string>& args) {
+    ResampleCommand cmd;
+    return cmd.Execute(args);
+}
+
+int ExecuteReinterpretFps(const std::vector<std::string>& args) {
+    ReinterpretFpsCommand cmd;
     return cmd.Execute(args);
 }
 
