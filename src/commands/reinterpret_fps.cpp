@@ -190,7 +190,8 @@ public:
                 }
             }
 
-            stack->SetLocalTimeSpan(FbxTimeSpan(outputStart, outputStop));
+            FbxTimeSpan outputSpan(outputStart, outputStop);
+            stack->SetLocalTimeSpan(outputSpan);
             if (stackIndex == 0) {
                 firstSourceStart = sourceStartSeconds;
                 firstSourceStop = sourceStopSeconds;
